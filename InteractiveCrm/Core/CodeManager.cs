@@ -1,5 +1,4 @@
-﻿using InteractiveCrm.Utils;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Host.Mef;
@@ -91,7 +90,6 @@ namespace InteractiveCrm.Core
                 MetadataReference.CreateFromFile(typeof(IOrganizationService).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(OrganizationServiceProxy).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(WhoAmIRequest).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(IInteractiveCrmLogger).Assembly.Location),
             };
 
             var projectInfo = ProjectInfo.Create(

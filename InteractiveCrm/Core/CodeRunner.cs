@@ -1,5 +1,4 @@
 ﻿using InteractiveCrm.Core;
-using InteractiveCrm.Utils;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
@@ -78,8 +77,6 @@ namespace InteractiveCrm
                 {
                     if (param.ParameterType == typeof(IOrganizationService)) 
                         entryParams.Add(service);
-                    if (param.ParameterType == typeof(IInteractiveCrmLogger)) 
-                        entryParams.Add(new InteractiveCrmLogger(_logWriter));
                 }
 
                 try 
