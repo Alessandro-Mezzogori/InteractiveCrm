@@ -13,7 +13,7 @@ namespace InteractiveCrm
     // To generate Base64 string for Images below, you can use https://www.base64-image.de/
     [Export(typeof(IXrmToolBoxPlugin)),
         ExportMetadata("Name", "InteractiveCrm"),
-        ExportMetadata("Description", "Provides a simple interfaces to interact trough C# with the IOrganizationService without creating a dedicated console application"),
+        ExportMetadata("Description", "Provides a simple interface to interact trough C# with the IOrganizationService without creating a dedicated console application"),
         // Please specify the base64 content of a 32x32 pixels image
         ExportMetadata("SmallImageBase64", ",iVBORw0KGgoAAAANSUhEUgAAACAAAAAcCAYAAAAAwr0iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAYpSURBVEhLrVd7iFRVGP/N7OyMu+vu6IrOLlJWbKxtCJVJYixpJrXa44"),
         // Please specify the base64 content of a 80x80 pixels image
