@@ -327,7 +327,7 @@
     <Compile Include="InteractiveCrmPluginControl.custom.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MyPlugin.cs" />
+    <Compile Include="InteractiveCrmPlugin.cs" />
     <Compile Include="InteractiveCrmPluginControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
