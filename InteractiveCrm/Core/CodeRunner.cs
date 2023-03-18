@@ -55,6 +55,7 @@ namespace InteractiveCrm
                 if(!entryPoints.Any()) 
                 { 
                     Console.Error.WriteLine("No entry point found");
+                    Console.Error.WriteLine($"Please supply a public static void Main");
                     return;
                 }
                 else if(entryPoints.Count() > 1)

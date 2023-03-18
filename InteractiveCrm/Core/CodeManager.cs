@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace InteractiveCrm.Core
 {
-    internal class CodeManager
+    public class CodeManager
     {
         private readonly MefHostServices _host;
         private readonly AdhocWorkspace _workspace;
@@ -97,8 +97,8 @@ namespace InteractiveCrm.Core
             var projectInfo = ProjectInfo.Create(
                 ProjectId.CreateNewId(),
                 VersionStamp.Create(),
-                "TestProject",
-                "TestProject",
+                "SourceProject",
+                "SourceProject",
                 LanguageNames.CSharp,
                 compilationOptions: compilationOptions)
                 .WithMetadataReferences(metadataReferences);

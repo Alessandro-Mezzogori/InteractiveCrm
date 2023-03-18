@@ -8,7 +8,7 @@ namespace InteractiveCrm
     // Syntax tree => errori di sintassi
     // Semantic model => errori di semantica
     // Compilation => errori di compilazione 
-    internal class DiagnosticManager
+    public class DiagnosticManager
     {
         private readonly BindingSource _diagnosticBindingSource;
         private readonly List<Diagnostic> _diagnostics; 

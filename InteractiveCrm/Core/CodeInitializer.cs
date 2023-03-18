@@ -11,9 +11,7 @@ using Microsoft.Crm.Sdk.Messages;
 
 class MainClass {
    public static void Main(IOrganizationService service){
-      Console.WriteLine(""Ciao"");
-      var test = 2;
-      Console.WriteLine(test);
+      Console.WriteLine(""Hello World"");
 
       var request  = new WhoAmIRequest();
       var response = (WhoAmIResponse) service.Execute(request);

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace InteractiveCrm
 {
-    internal class ControlWriter : TextWriter
+    public class ControlWriter : TextWriter
     {
         private readonly Control _textbox;
 

@@ -302,6 +302,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CodeEditorDockedContent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\CodeEditorDockedContent.Designer.cs">
+      <DependentUpon>CodeEditorDockedContent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TabsDockedContent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\TabsDockedContent.Designer.cs">
+      <DependentUpon>TabsDockedContent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Core\CodeInitializer.cs" />
     <Compile Include="Core\CodeRunner.cs" />
     <Compile Include="Core\ControlWriter.cs" />
@@ -343,6 +355,12 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\CodeEditorDockedContent.resx">
+      <DependentUpon>CodeEditorDockedContent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TabsDockedContent.resx">
+      <DependentUpon>TabsDockedContent.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InteractiveCrmPluginControl.resx">
       <DependentUpon>InteractiveCrmPluginControl.cs</DependentUpon>
     </EmbeddedResource>

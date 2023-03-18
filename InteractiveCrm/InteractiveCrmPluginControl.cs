@@ -2,6 +2,7 @@
 using McTools.Xrm.Connection;
 using Microsoft.Xrm.Sdk;
 using System;
+using System.IO;
 using System.Windows.Forms;
 using XrmToolBox.Extensibility;
 
@@ -19,13 +20,10 @@ namespace InteractiveCrm
         public InteractiveCrmPluginControl()
         {
             InitializeComponent();
-            SetupAutocompleteMenu();
         }
 
         private void MyPluginControl_Load(object sender, EventArgs e)
         {
-            ShowInfoNotification("This is a notification that can lead to XrmToolBox repository", new Uri("https://github.com/MscrmTools/XrmToolBox"));
-
             // Loads or creates the settings for the plugin
             if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
             {
@@ -39,9 +37,13 @@ namespace InteractiveCrm
             }
             
             _codeManager = CodeManager.Create();
-            _diagnosticManager = new DiagnosticManager(this.diagnosticViewModelBindingSource);
-            _outputConsoleWriter = new ControlWriter(consoleOutEmulator);
-            _logWriter = new ControlWriter(logTextBox);
+
+            AddDockContent(_codeManager);
+
+            _diagnosticManager = new DiagnosticManager(tabsDockedContent.GetDiagnosticSource());
+
+            _outputConsoleWriter = tabsDockedContent.GetConsoleWriter();
+            _logWriter = tabsDockedContent.GetLogWriter();
 
             _codeRunner = new CodeRunner(
                 _codeManager, 
@@ -52,7 +54,8 @@ namespace InteractiveCrm
             );
 
             var codeInitializer = new CodeInitializer();
-            mainCodeInput.Text = codeInitializer.GetInitialCode();
+            codeEditorDockedContent.mainCodeInput.Text = codeInitializer.GetInitialCode();
+            codeEditorDockedContent.mainCodeInput.KeyDown += InteractiveCrmPluginControl_KeyDown;
         }
 
         private void executeCodeButton_Click(object sender, EventArgs e)
@@ -63,7 +66,7 @@ namespace InteractiveCrm
             ExecuteMethod(ExecuteCode);
         }
 
-        private void mainCodeInput_KeyDown(object sender, KeyEventArgs e)
+        private void InteractiveCrmPluginControl_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.F5)
             {
@@ -73,7 +76,7 @@ namespace InteractiveCrm
 
         private void ExecuteCode()
         {
-            _codeManager.UpdateSourceFile(mainCodeInput.Text);
+            _codeManager.UpdateSourceFile(codeEditorDockedContent.mainCodeInput.Text);
             _outputConsoleWriter.Clear();
 
             try
@@ -85,8 +88,18 @@ namespace InteractiveCrm
                 ShowErrorDialog(ex, "An exception occured");
             }
 
-            infoTabs.SelectTab(consoleTab);
-            mainCodeInput.Focus();
+            tabsDockedContent.SelectConsoleTab();
+            codeEditorDockedContent.mainCodeInput.Focus();
+        }
+
+        private void diagnosticsDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // TEMP
+            // TODO FIND WAY TO HANDLE DOCKED CONTENT BETTER
+            // Move cursor to diagnostic location 
+            var diagnostic = _diagnosticManager.GetDiagnostic(e.RowIndex);
+            codeEditorDockedContent.mainCodeInput.SelectionStart = diagnostic.Location.SourceSpan.Start;
+            codeEditorDockedContent.mainCodeInput.Focus();
         }
 
         /// <summary>
@@ -114,22 +127,24 @@ namespace InteractiveCrm
             }
         }
 
-        private void mainCodeInput_TextChanged(object sender, KeyPressEventArgs e)
+        private void saveFileButton_Click(object sender, EventArgs e)
         {
-            _codeManager.UpdateSourceFile(mainCodeInput.Text);
+            using(SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "C# File (*.cs)|*.cs|All Files (*.*)|*.*";
+                saveFileDialog.Title = "Save File As";
+                saveFileDialog.CheckFileExists = false;
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.DefaultExt = "cs";
+                saveFileDialog.SupportMultiDottedExtensions = true;
 
-            var autocompleteList = _codeManager.UpdateAutocompleteList(mainCodeInput.SelectionStart);
-            mainCodeInputAutoCompleteMenu.Items.SetAutocompleteItems(autocompleteList);
-            mainCodeInputAutoCompleteMenu.MinFragmentLength = e.KeyChar == '.' ? 0 : 1; // TODO centralize setting
+                if(saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = saveFileDialog.FileName;
+                    var sourceText = codeEditorDockedContent.mainCodeInput.Text;
+                    File.WriteAllText(filePath, sourceText);
+                }
+            }
         }
-
-        private void diagnosticsDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // Move cursor to diagnostic location 
-            var diagnostic = _diagnosticManager.GetDiagnostic(e.RowIndex);
-            mainCodeInput.SelectionStart = diagnostic.Location.SourceSpan.Start;
-            mainCodeInput.Focus();
-        }
-
     }
 }

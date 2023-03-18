@@ -1,4 +1,6 @@
-﻿using System;
+﻿using InteractiveCrm.Controls;
+using InteractiveCrm.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,30 +11,16 @@ namespace InteractiveCrm
 {
     public partial class InteractiveCrmPluginControl
     {
-        public void SetupAutocompleteMenu()
+        public void AddDockContent(CodeManager manager)
         {
-            // 
-            // mainCodeInputAutoCompleteMenu
-            // 
-            mainCodeInputAutoCompleteMenu = new FastColoredTextBoxNS.AutocompleteMenu(mainCodeInput);
-            mainCodeInputAutoCompleteMenu.AllowTabKey = false;
-            mainCodeInputAutoCompleteMenu.AlwaysShowTooltip = false;
-            mainCodeInputAutoCompleteMenu.AppearInterval = 500;
-            mainCodeInputAutoCompleteMenu.AutoClose = false;
-            mainCodeInputAutoCompleteMenu.AutoSize = false;
-            mainCodeInputAutoCompleteMenu.BackColor = System.Drawing.Color.White;
-            mainCodeInputAutoCompleteMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
-            mainCodeInputAutoCompleteMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            mainCodeInputAutoCompleteMenu.MaxTooltipSize = new System.Drawing.Size(0, 0);
-            mainCodeInputAutoCompleteMenu.MinFragmentLength = 1;
-            mainCodeInputAutoCompleteMenu.Name = "mainCodeInputAutoCompleteMenu";
-            mainCodeInputAutoCompleteMenu.Padding = new System.Windows.Forms.Padding(0);
-            mainCodeInputAutoCompleteMenu.SearchPattern = "[\\w]";
-            mainCodeInputAutoCompleteMenu.Size = new System.Drawing.Size(154, 154);
-            mainCodeInputAutoCompleteMenu.ToolTipDuration = 3000;
+            codeEditorDockedContent = new CodeEditorDockedContent(manager);
+            codeEditorDockedContent.Show(mainDockPanel, DockState.Document);
+
+            tabsDockedContent = new TabsDockedContent(diagnosticsDataGridView_CellDoubleClick);
+            tabsDockedContent.Show(mainDockPanel, DockState.DockBottom);
         }
 
-        private FastColoredTextBoxNS.AutocompleteMenu mainCodeInputAutoCompleteMenu;
-        private DockPanel dockPanel;
+        private TabsDockedContent tabsDockedContent;
+        private CodeEditorDockedContent codeEditorDockedContent;
     }
 }

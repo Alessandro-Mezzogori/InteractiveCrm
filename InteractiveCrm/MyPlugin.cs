@@ -13,11 +13,11 @@ namespace InteractiveCrm
     // To generate Base64 string for Images below, you can use https://www.base64-image.de/
     [Export(typeof(IXrmToolBoxPlugin)),
         ExportMetadata("Name", "InteractiveCrm"),
-        ExportMetadata("Description", "This is a description for my first plugin"),
+        ExportMetadata("Description", "Provides a simple interfaces to interact trough C# with the IOrganizationService without creating a dedicated console application"),
         // Please specify the base64 content of a 32x32 pixels image
-        ExportMetadata("SmallImageBase64", null),
+        ExportMetadata("SmallImageBase64", ",iVBORw0KGgoAAAANSUhEUgAAACAAAAAcCAYAAAAAwr0iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAYpSURBVEhLrVd7iFRVGP/N7OyMu+vu6IrOLlJWbKxtCJVJYixpJrXa44"),
         // Please specify the base64 content of a 80x80 pixels image
-        ExportMetadata("BigImageBase64", null),
+        ExportMetadata("BigImageBase64", "iVBORw0KGgoAAAANSUhEUgAAAFAAAABFCAYAAADdCmGFAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABfVSURBVHhe5VwJlFxVmf5rr96bpDs7hJDIFgMkEoFBh6M4BAibgugxsuhBwByHGWU8HmYGGDijg87giGMAgeEIskhYREiQxYMIRnEghCWQkD10Z+mturq79nX+77/3vndf1atOM3LOmPBXf3X/+9/lvfe9"),
         ExportMetadata("BackgroundColor", "Lavender"),
         ExportMetadata("PrimaryFontColor", "Black"),
         ExportMetadata("SecondaryFontColor", "Gray")]

@@ -19,7 +19,7 @@ namespace InteractiveCrm.Core
 
         public void Log(string message)
         {
-            _writer.WriteLine($"[{DateTime.Now.TimeOfDay}] - {message}");
+            _writer.WriteLine($"[{DateTime.Now.TimeOfDay.ToString("")}] - {message}");
         }
     }
 }
