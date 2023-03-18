@@ -33,6 +33,11 @@ namespace InteractiveCrm
             _textbox.Text += value;
         }
 
+        public void Clear()
+        {
+            _textbox.Text = string.Empty;
+        }
+
         public override Encoding Encoding => Encoding.UTF8;
     }
 }

@@ -1,9 +1,7 @@
 ﻿using InteractiveCrm.Core;
 using McTools.Xrm.Connection;
-using Microsoft.CodeAnalysis.Completion;
 using Microsoft.Xrm.Sdk;
 using System;
-using System.Linq;
 using System.Windows.Forms;
 using XrmToolBox.Extensibility;
 
@@ -14,35 +12,14 @@ namespace InteractiveCrm
         private Settings mySettings;
         private CodeManager _codeManager;
         private CodeRunner _codeRunner;
+        private DiagnosticManager _diagnosticManager;
+        private ControlWriter _outputConsoleWriter;
+        private ControlWriter _logWriter;
 
         public InteractiveCrmPluginControl()
         {
             InitializeComponent();
-            _codeManager = CodeManager.Create();
-
-            string code = @"using System;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Crm.Sdk.Messages;
-
-class MainClass {
-   public static void Execute(IOrganizationService service){
-      Console.WriteLine(""Ciao"");
-      var test = 2;
-      Console.WriteLine(test);
-
-      var request  = new WhoAmIRequest();
-      var response = (WhoAmIResponse) service.Execute(request);
-      Console.WriteLine(response.UserId);
-   }
-}";
-            mainCodeInput.Text = code;
-
-            _codeRunner = new CodeRunner(
-                _codeManager, 
-                new EntryPointResolver(), 
-                new ControlWriter(consoleOutEmulator),
-                diagnosticViewModelBindingSource
-            );
+            SetupAutocompleteMenu();
         }
 
         private void MyPluginControl_Load(object sender, EventArgs e)
@@ -60,14 +37,25 @@ class MainClass {
             {
                 LogInfo("Settings found and loaded");
             }
+            
+            _codeManager = CodeManager.Create();
+            _diagnosticManager = new DiagnosticManager(this.diagnosticViewModelBindingSource);
+            _outputConsoleWriter = new ControlWriter(consoleOutEmulator);
+            _logWriter = new ControlWriter(logTextBox);
+
+            _codeRunner = new CodeRunner(
+                _codeManager, 
+                new EntryPointResolver(), 
+                _diagnosticManager,
+                _outputConsoleWriter,
+                _logWriter
+            );
+
+            var codeInitializer = new CodeInitializer();
+            mainCodeInput.Text = codeInitializer.GetInitialCode();
         }
 
-        private void tsbClose_Click(object sender, EventArgs e)
-        {
-            CloseTool();
-        }
-
-        private void tsbSample_Click(object sender, EventArgs e)
+        private void executeCodeButton_Click(object sender, EventArgs e)
         {
             // The ExecuteMethod method handles connecting to an
             // organization if XrmToolBox is not yet connected
@@ -75,12 +63,30 @@ class MainClass {
             ExecuteMethod(ExecuteCode);
         }
 
+        private void mainCodeInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.F5)
+            {
+                ExecuteMethod(ExecuteCode);
+            }
+        }
+
         private void ExecuteCode()
         {
             _codeManager.UpdateSourceFile(mainCodeInput.Text);
-            _codeRunner.Run(Service);
+            _outputConsoleWriter.Clear();
 
-            consoleOutEmulator.Focus();
+            try
+            {
+                _codeRunner.Run(Service);
+            }
+            catch(Exception ex)
+            {
+                ShowErrorDialog(ex, "An exception occured");
+            }
+
+            infoTabs.SelectTab(consoleTab);
+            mainCodeInput.Focus();
         }
 
         /// <summary>
@@ -112,15 +118,18 @@ class MainClass {
         {
             _codeManager.UpdateSourceFile(mainCodeInput.Text);
 
-            var completitionService = CompletionService.GetService(_codeManager.SourceDocument);
-            var resultsTask = completitionService.GetCompletionsAsync(_codeManager.SourceDocument, mainCodeInput.SelectionStart);
-            resultsTask.Wait();
-            var autocompleteItems = resultsTask.Result.ItemsList
-                .Select(x => x.DisplayText)
-                .ToArray();
-
-            mainCodeInputAutoCompleteMenu.Items.SetAutocompleteItems(autocompleteItems);
-            mainCodeInputAutoCompleteMenu.MinFragmentLength = e.KeyChar == '.' ? 0 : 1;
+            var autocompleteList = _codeManager.UpdateAutocompleteList(mainCodeInput.SelectionStart);
+            mainCodeInputAutoCompleteMenu.Items.SetAutocompleteItems(autocompleteList);
+            mainCodeInputAutoCompleteMenu.MinFragmentLength = e.KeyChar == '.' ? 0 : 1; // TODO centralize setting
         }
+
+        private void diagnosticsDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Move cursor to diagnostic location 
+            var diagnostic = _diagnosticManager.GetDiagnostic(e.RowIndex);
+            mainCodeInput.SelectionStart = diagnostic.Location.SourceSpan.Start;
+            mainCodeInput.Focus();
+        }
+
     }
 }

@@ -302,21 +302,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\CodeInitializer.cs" />
     <Compile Include="Core\CodeRunner.cs" />
     <Compile Include="Core\ControlWriter.cs" />
     <Compile Include="Core\CodeManager.cs" />
+    <Compile Include="Core\DiagnosticManager.cs" />
     <Compile Include="Core\DiagnosticsExtensions.cs" />
     <Compile Include="Core\DiagnosticViewModel.cs" />
     <Compile Include="Core\EntryPointInfo.cs" />
     <Compile Include="Core\EntryPointResolver.cs" />
-    <Compile Include="MyPlugin.cs" />
-    <Compile Include="MyPluginControl.cs">
+    <Compile Include="Core\InteractiveCrmLogger.cs" />
+    <Compile Include="InteractiveCrmPluginControl.custom.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MyPluginControl.designer.cs">
-      <DependentUpon>MyPluginControl.cs</DependentUpon>
+    <Compile Include="MyPlugin.cs" />
+    <Compile Include="InteractiveCrmPluginControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InteractiveCrmPluginControl.designer.cs">
+      <DependentUpon>InteractiveCrmPluginControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -332,9 +343,19 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MyPluginControl.resx">
-      <DependentUpon>MyPluginControl.cs</DependentUpon>
+    <EmbeddedResource Include="InteractiveCrmPluginControl.resx">
+      <DependentUpon>InteractiveCrmPluginControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InteractiveCrm.Utils\InteractiveCrm.Utils.csproj">
+      <Project>{caf2b215-ed5d-4d5d-88b0-1dbfc4d42416}</Project>
+      <Name>InteractiveCrm.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using InteractiveCrm.Utils;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Text;
@@ -63,6 +65,14 @@ namespace InteractiveCrm.Core
             _workspace.TryApplyChanges(sourceDocument.Project.Solution);
         }
 
+        public ICollection<string> UpdateAutocompleteList(int cursorPosition)
+        {
+            var completitionService = CompletionService.GetService(SourceDocument);
+            var resultsTask = completitionService.GetCompletionsAsync(SourceDocument, cursorPosition);
+            resultsTask.Wait();
+            return resultsTask.Result.ItemsList.Select(x => x.DisplayText).ToArray();
+        }
+
         public static CodeManager Create()
         {
             var host = MefHostServices.Create(MefHostServices.DefaultAssemblies);
@@ -72,6 +82,8 @@ namespace InteractiveCrm.Core
                     OutputKind.DynamicallyLinkedLibrary
                 );
 
+            // TODO dynamic adding of references
+            // TODO if reference not found search in nuget, download and add
             var metadataReferences = new PortableExecutableReference[] {
                 MetadataReference.CreateFromFile(typeof(IOrganizationService).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
@@ -79,6 +91,7 @@ namespace InteractiveCrm.Core
                 MetadataReference.CreateFromFile(typeof(IOrganizationService).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(OrganizationServiceProxy).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(WhoAmIRequest).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(IInteractiveCrmLogger).Assembly.Location),
             };
 
             var projectInfo = ProjectInfo.Create(
@@ -90,7 +103,10 @@ namespace InteractiveCrm.Core
                 compilationOptions: compilationOptions)
                 .WithMetadataReferences(metadataReferences);
 
-            var project = workspace.AddProject(projectInfo);
+            workspace.AddProject(projectInfo);
+
+            // Calls the completition service to pre load the assembly, may take some time
+            CompletionService.GetService(null);
 
             return new CodeManager(host, workspace);
         }
